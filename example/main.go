@@ -137,9 +137,17 @@ func setupHandler(www string) http.Handler {
 func main() {
 	// defer profile.Start().Stop()
 	go func() {
+		print("listen...")
 		log.Println(http.ListenAndServe("localhost:6060", nil))
+		print("listened")
 	}()
 	// runtime.SetBlockProfileRate(1)
+	print("1")
+	//err := http3.ListenAndServeQUIC("localhost:4242", "/path/to/cert/chain.pem", "/path/to/privkey.pem", nil)
+	//if err != nil {
+	//	print("err: ", err.Error())
+	//	return
+	//}
 
 	verbose := flag.Bool("v", false, "verbose")
 	bs := binds{}
@@ -190,10 +198,11 @@ func main() {
 					Server:     &http.Server{Handler: handler, Addr: bCap},
 					QuicConfig: quicConf,
 				}
-				err = server.ListenAndServeTLS(testdata.GetCertificatePaths())
+				//err = server.ListenAndServeTLS(testdata.GetCertificatePaths())
+				err = server.ListenAndServeTLS("server.crt", "server.key")
 			}
 			if err != nil {
-				fmt.Println(err)
+				fmt.Println(err.Error())
 			}
 			wg.Done()
 		}()

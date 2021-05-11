@@ -8,6 +8,7 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -15,7 +16,6 @@ import (
 
 	"github.com/lucas-clemente/quic-go"
 	"github.com/lucas-clemente/quic-go/http3"
-	"github.com/lucas-clemente/quic-go/internal/testdata"
 	"github.com/lucas-clemente/quic-go/internal/utils"
 	"github.com/lucas-clemente/quic-go/logging"
 	"github.com/lucas-clemente/quic-go/qlog"
@@ -53,7 +53,15 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	testdata.AddRootCA(pool)
+	//testdata.AddRootCA(pool)
+	caCertPath := "/Users/yuhai/Projects/quic-go/example/ca.crt"
+
+	caCrt, err := ioutil.ReadFile(caCertPath)
+	if err != nil {
+		fmt.Println("ReadFile err:", err)
+		return
+	}
+	pool.AppendCertsFromPEM(caCrt)
 
 	var qconf quic.Config
 	if *enableQlog {
@@ -87,7 +95,7 @@ func main() {
 		go func(addr string) {
 			rsp, err := hclient.Get(addr)
 			if err != nil {
-				log.Fatal(err)
+				log.Fatal("get err: ", err)
 			}
 			logger.Infof("Got response for %s: %#v", addr, rsp)
 
