@@ -222,9 +222,10 @@ func Upload(client *http.Client, url string, values map[string]io.Reader) (err e
 	return
 }
 
-func mustOpen(f string) *os.File {
+func mustOpen(file string) *os.File {
 	//f = "/Users/yuhai/Projects/portkey/100mr"
-	r, err := os.Open(f)
+	println("path: ", file)
+	r, err := os.Open(file)
 	if err != nil {
 		panic(err)
 	}
